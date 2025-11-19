@@ -13,13 +13,9 @@ Idade = int(Idade)
 
 if Idade  < 12:
     print("Você é criança")
-elif ((Idade > 13) AND (IDADE <17)):
+elif ((Idade > 13) & (Idade <17)):
     print("você é adolescente")
 elif ((Idade >17) & (Idade < 59)):
     print("Você é um adulto")
 else :
-    print("Você é idoso")
-    
-    
-    
-    
+    print("Você é idoso")         
