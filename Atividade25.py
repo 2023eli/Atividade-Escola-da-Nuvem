@@ -1,28 +1,44 @@
 import requests
 
-print("=== Busca de Usuário Fictício Aleatório ===")
+def consultar_cep(cep: str):
+    # Mantém só os números do CEP
+    cep = ''.join(filter(str.isdigit, cep))
 
-url = "https://randomuser.me/api/"
+    # Validação simples do CEP (8 dígitos)
+    if len(cep) != 8:
+        print("CEP inválido. Digite um CEP com 8 números.")
+        return
 
-try:
-    resposta = requests.get(url)
+    url = f"https://viacep.com.br/ws/{cep}/json/"
 
-    # Verifica se a resposta foi OK (código 200)
-    if resposta.status_code == 200:
+    try:
+        resposta = requests.get(url, timeout=5)
+        resposta.raise_for_status()  # lança erro se o status não for 200
+
         dados = resposta.json()
 
-        usuario = dados["results"][0]
+        # A API ViaCEP devolve {"erro": true} quando o CEP não existe
+        if dados.get("erro"):
+            print("CEP não encontrado.")
+            return
 
-        nome_completo = f'{usuario["name"]["title"]} {usuario["name"]["first"]} {usuario["name"]["last"]}'
-        email = usuario["email"]
-        pais = usuario["location"]["country"]
+        logradouro = dados.get("logradouro", "Não informado")
+        bairro = dados.get("bairro", "Não informado")
+        cidade = dados.get("localidade", "Não informado")
+        estado = dados.get("uf", "Não informado")
 
-        print("\n=== Usuário Encontrado ===")
-        print(f"Nome : {nome_completo}")
-        print(f"E-mail: {email}")
-        print(f"País : {pais}")
-    else:
-        print("Falha ao buscar usuário. Código de status:", resposta.status_code)
+        print("\nResultado da consulta:")
+        print(f"Logradouro: {logradouro}")
+        print(f"Bairro:     {bairro}")
+        print(f"Cidade:     {cidade}")
+        print(f"Estado:     {estado}")
 
-except requests.exceptions.RequestException:
-    print("Falha na conexão com a API. Verifique sua internet e tente novamente.")
+    except requests.RequestException:
+        print("Falha na requisição. Verifique sua conexão ou tente novamente.")
+
+def main():
+    cep = input("Digite o CEP (apenas números): ")
+    consultar_cep(cep)
+
+if __name__ == "__main__":
+    main()
