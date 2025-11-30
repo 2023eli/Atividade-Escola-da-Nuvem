@@ -1,0 +1,23 @@
+def criar_arquivo_txt():
+    nome_arquivo = input("Digite o nome do arquivo (ex: dados.txt): ")
+
+    print("Digite o conteúdo do arquivo. Para finalizar, digite apenas 'fim':")
+
+    linhas = []
+    while True:
+        linha = input()
+        if linha.lower() == "fim":
+            break
+        linhas.append(linha)
+
+    try:
+        with open(nome_arquivo, "w", encoding="utf-8") as arquivo:
+            for linha in linhas:
+                arquivo.write(linha + "\n")
+
+        print(f"Arquivo '{nome_arquivo}' criado com sucesso!")
+    except Exception as erro:
+        print(f"Falha ao salvar o arquivo: {erro}")
+
+# Executar o programa
+criar_arquivo_txt()
